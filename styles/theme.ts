@@ -1,8 +1,17 @@
 import { DefaultTheme } from "styled-components";
 
-const theme: DefaultTheme = {
-  borderRadius: "5px",
+const mainFont = "Montserrat_400Regular";
+const mainFontLight = "Montserrat_300Light";
+const mainFontSemiBold = "Montserrat_600SemiBold";
+const mainFontBold = "Montserrat_700Bold";
 
+const theme: DefaultTheme = {
+  borderRadius: "18px",
+
+  mainFont: mainFont,
+  mainFontLight: mainFontLight,
+  mainFontSemiBold: mainFontSemiBold,
+  mainFontBold: mainFontBold,
   colors: {
     main: "#FA8071",
     secondary: "#2D3683",

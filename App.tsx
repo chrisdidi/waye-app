@@ -8,7 +8,20 @@ import firebase from "./firebaseConfig";
 import { theme } from "./styles/theme";
 import { ThemeProvider } from "./styles/styled-components";
 import AuthNavigation from "./navigations/AuthNavigation";
+import {
+  useFonts,
+  Montserrat_300Light,
+  Montserrat_400Regular,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+} from "@expo-google-fonts/montserrat";
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Montserrat_300Light,
+    Montserrat_400Regular,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
+  });
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -21,7 +34,7 @@ export default function App() {
   }, []);
   return (
     <NavigationContainer>
-      {isLoggedIn === null && <AppLoading />}
+      {(isLoggedIn === null || !fontsLoaded) && <AppLoading />}
       <ThemeProvider theme={theme}>
         <View style={{ flex: 1 }}>
           {isLoggedIn !== null &&

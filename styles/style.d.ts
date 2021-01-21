@@ -5,6 +5,10 @@ declare module "styled-components" {
   export interface DefaultTheme {
     borderRadius: string;
 
+    mainFont: string;
+    mainFontLight: string;
+    mainFontBold: string;
+    mainFontSemiBold: string;
     colors: {
       main: string;
       secondary: string;
