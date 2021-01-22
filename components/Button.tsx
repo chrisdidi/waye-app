@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, Text, View, ActivityIndicator } from "react-native";
+import { TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
 import styled from "../styles/styled-components";
 
 const Container = styled.View`
@@ -30,13 +30,13 @@ const Button: React.FC<IProps> = ({
   onPress,
 }) => {
   return (
-    <Pressable onPress={onPress}>
+    <TouchableOpacity onPress={onPress}>
       <Container>
         <Title>
           {loading ? <ActivityIndicator size={17} color="white" /> : title}
         </Title>
       </Container>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

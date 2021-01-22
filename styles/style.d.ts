@@ -15,6 +15,10 @@ declare module "styled-components" {
       grey50: string;
       grey400: string;
       grey700: string;
+      red200: string;
+      red400: string;
+      red500: string;
+      red700: string;
     };
   }
 }

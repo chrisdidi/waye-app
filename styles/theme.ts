@@ -18,6 +18,10 @@ const theme: DefaultTheme = {
     grey50: "#F9FAFB",
     grey400: "#9CA3AF",
     grey700: "#374151",
+    red200: "#FECACA",
+    red400: "#F87171",
+    red500: "#EF4444",
+    red700: "#B91C1C",
   },
 };
 
