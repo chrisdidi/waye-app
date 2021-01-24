@@ -9,10 +9,11 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import styled from "../styles/styled-components";
 
-const Wrapper = styled.View`
-    height: 40px;
-    width: 40px;
-    border-radius: 16px;
+const Wrapper = styled.View<any>`
+  opacity: ${(props) => props.opacity};
+    min-height: ${(props) => props?.size}px;
+    min-width: ${(props) => props?.size}px;
+    border-radius: ${(props) => (props?.size * 40) / 100}px;
     background-color: ${(props) => props.theme.colors.main}
     align-items: center;
     justify-content: center;
@@ -24,9 +25,17 @@ interface IProps {
   onPress: any;
   loading: any;
   icon: any;
+  size?: any;
+  disabled?: boolean;
 }
 
-const IconButton: React.FC<IProps> = ({ onPress, loading, icon }) => {
+const IconButton: React.FC<IProps> = ({
+  onPress,
+  loading,
+  icon,
+  size = 40,
+  disabled = false,
+}) => {
   const animatePress = new Animated.Value(1);
 
   const animateIn = () => {
@@ -48,7 +57,7 @@ const IconButton: React.FC<IProps> = ({ onPress, loading, icon }) => {
     <TouchableWithoutFeedback
       onPressIn={() => animateIn()}
       onPressOut={() => animateOut()}
-      onPress={onPress}
+      onPress={disabled ? () => {} : onPress}
       disabled={loading}
     >
       <Animated.View
@@ -60,7 +69,9 @@ const IconButton: React.FC<IProps> = ({ onPress, loading, icon }) => {
           ],
         }}
       >
-        <Wrapper>{loading ? <ActivityIndicator /> : icon}</Wrapper>
+        <Wrapper opacity={disabled ? 0.7 : 1} size={size}>
+          {loading ? <ActivityIndicator /> : icon}
+        </Wrapper>
       </Animated.View>
     </TouchableWithoutFeedback>
   );
