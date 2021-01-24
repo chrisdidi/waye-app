@@ -1,19 +1,15 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
 import { auth } from "../firebaseConfig";
+import { USERS_FRAGMENT } from "../fragments";
 
 const GET_ME = gql`
   query getMe($where: users_bool_exp) {
     users(where: $where) {
-      id
-      firebase_id
-      name
-      email
-      role
-      created_at
-      updated_at
+      ...UsersPart
     }
   }
+  ${USERS_FRAGMENT}
 `;
 const useMe = () => {
   let uid = auth()?.currentUser?.uid;

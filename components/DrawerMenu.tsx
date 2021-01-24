@@ -1,7 +1,4 @@
-import {
-  DrawerContentComponentProps,
-  DrawerScreenProps,
-} from "@react-navigation/drawer";
+import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import React, { useContext } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,6 +9,7 @@ import avatar from "../assets/avatar.png";
 
 const Container = styled.View`
   flex: 1;
+  width: 100%;
 `;
 
 const Header = styled.View`
@@ -83,7 +81,11 @@ const DrawerMenu: React.FC<IProps> = ({ navigation }) => {
     <Container>
       <SafeAreaView style={{ flex: 1 }}>
         <Header>
-          <AvatarContainer>
+          <AvatarContainer
+            onPress={() => {
+              navigation.navigate("Profile");
+            }}
+          >
             <Avatar
               source={
                 Boolean(data.users[0]?.avatar)
@@ -96,9 +98,27 @@ const DrawerMenu: React.FC<IProps> = ({ navigation }) => {
         </Header>
         <Body>
           <MenuContainer>
-            <MenuItem>Home</MenuItem>
-            <MenuItem>Orders</MenuItem>
-            <MenuItem>Settings</MenuItem>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Home");
+              }}
+            >
+              <MenuItem>Home</MenuItem>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Orders");
+              }}
+            >
+              <MenuItem>Orders</MenuItem>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Settings");
+              }}
+            >
+              <MenuItem>Settings</MenuItem>
+            </TouchableOpacity>
             <MenuItem>Help</MenuItem>
           </MenuContainer>
           <SignOutContainer>

@@ -42,18 +42,21 @@ export default function App() {
   }, []);
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer>
-        {(isLoggedIn === null || !fontsLoaded) && <AppLoading />}
-        <ThemeProvider theme={theme}>
-          <MeProvider>
-            <View style={{ flex: 1 }}>
-              {isLoggedIn !== null &&
-                (isLoggedIn ? <MainNavigation /> : <AuthNavigation />)}
-            </View>
-          </MeProvider>
-        </ThemeProvider>
-        <StatusBar style="auto" />
-      </NavigationContainer>
+      {isLoggedIn !== null && fontsLoaded ? (
+        <NavigationContainer>
+          <ThemeProvider theme={theme}>
+            <MeProvider>
+              <View style={{ flex: 1 }}>
+                {isLoggedIn !== null &&
+                  (isLoggedIn ? <MainNavigation /> : <AuthNavigation />)}
+              </View>
+            </MeProvider>
+          </ThemeProvider>
+          <StatusBar style="auto" />
+        </NavigationContainer>
+      ) : (
+        <AppLoading />
+      )}
     </ApolloProvider>
   );
 }

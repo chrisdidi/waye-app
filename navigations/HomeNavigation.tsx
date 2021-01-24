@@ -7,7 +7,7 @@ const Stack = createStackNavigator();
 
 const HomeNavigation = () => {
   return (
-    <Stack.Navigator headerMode="none">
+    <Stack.Navigator headerMode="none" initialRouteName="Dashboard">
       <Stack.Screen name="Dashboard" component={Dashboard} />
       <Stack.Screen name="MessagesList" component={MessagesList} />
     </Stack.Navigator>

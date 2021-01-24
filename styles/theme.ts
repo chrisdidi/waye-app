@@ -16,6 +16,8 @@ const theme: DefaultTheme = {
     main: "#FA8071",
     secondary: "#2D3683",
     grey50: "#F9FAFB",
+    grey100: "#F3F4F6",
+    grey200: "#E5E7EB",
     grey400: "#9CA3AF",
     grey700: "#374151",
     red200: "#FECACA",

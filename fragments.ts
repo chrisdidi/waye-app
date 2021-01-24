@@ -11,3 +11,13 @@ export const USERS_FRAGMENT = gql`
     updated_at
   }
 `;
+
+export const ADVERTISEMENTS_FRAGMENT = gql`
+  fragment AdvertisementsPart on advertisements {
+    id
+    image_url
+    title
+    description
+    link
+  }
+`;

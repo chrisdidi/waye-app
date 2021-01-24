@@ -24,13 +24,11 @@ const MainNavigation = () => {
     <LoadingContainer>
       <ActivityIndicator color="white" />
     </LoadingContainer>
+  ) : data.users?.length > 0 && data.users[0].name ? (
+    <MainDrawer />
   ) : (
     <Stack.Navigator headerMode="none">
-      {data.users?.length > 0 && data.users[0].name ? (
-        <Stack.Screen name="Dashboard" component={MainDrawer} />
-      ) : (
-        <Stack.Screen name="Setup" component={Name} />
-      )}
+      <Stack.Screen name="Setup" component={Name} />
     </Stack.Navigator>
   );
 };
