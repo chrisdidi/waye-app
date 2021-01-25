@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   RefreshControl,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import styled from "../../styles/styled-components";
@@ -21,6 +22,11 @@ import {
 import { gql, useQuery } from "@apollo/client";
 import { ADVERTISEMENTS_FRAGMENT } from "../../fragments";
 import ServiceSelector from "../../components/ServiceSelector";
+import useOrders from "../../hooks/useOrders";
+import { ORDER_STATUS } from "../../enum";
+import { auth } from "../../firebaseConfig";
+import { MeStore } from "../../context/MeStore";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Container = styled.View`
   flex: 1;
@@ -86,13 +92,25 @@ const AdsTextContainer = styled.View`
   height: auto;
   padding: 4px 8px;
 `;
-const GET_ADVERTISEMENTS = gql`
-  {
-    advertisements {
-      ...AdvertisementsPart
-    }
-  }
-  ${ADVERTISEMENTS_FRAGMENT}
+
+const SubmitButtonContainer = styled.View`
+  position: absolute;
+  bottom: 0;
+  padding: 12px 20px;
+  shadow-color: ${(props) => props.theme.colors.grey400};
+  shadow-opacity: 0.4;
+  padding-bottom: 28px;
+  background-color: white;
+  width: 100%;
+`;
+
+const SubmitButton = styled.View`
+  width: 100%;
+  height: 60px;
+  border-radius: 16px;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.theme.colors.secondary};
 `;
 
 const Labels = styled.Text`
@@ -106,11 +124,59 @@ const Sections = styled.View`
   width: 100%;
   padding: 16px;
 `;
+
+const OrderText = styled.Text`
+  font-family: ${(props) => props.theme.mainFontSemiBold};
+  color: ${(props) => props.theme.colors.main};
+  text-align: center;
+  font-size: 20px;
+`;
+
+const LoadingBox = styled.View`
+  width: 100%;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ServicesContainer = styled.View`
+  width: 100%;
+  height: 124px;
+  position: relative;
+`;
+const GET_ADVERTISEMENTS = gql`
+  {
+    advertisements {
+      ...AdvertisementsPart
+    }
+  }
+  ${ADVERTISEMENTS_FRAGMENT}
+`;
+
 const Dashboard = ({ navigation }: any) => {
   const { width } = Dimensions.get("window");
   const { data, loading, error, refetch } = useQuery(GET_ADVERTISEMENTS, {
     fetchPolicy: "network-only",
     notifyOnNetworkStatusChange: true,
+  });
+
+  const { data: meData } = useContext(MeStore);
+  const {
+    data: ordersData,
+    loading: ordersLoading,
+    error: ordersError,
+    refetch: ordersRefetch,
+  } = useOrders({
+    fetchPolicy: "network-only",
+    user_id: meData?.users[0]?.id,
+    status: [
+      {
+        status: { _eq: "Waiting" },
+      },
+      {
+        status: { _eq: "Ongoing" },
+      },
+    ],
   });
 
   const [service, setService] = useState("");
@@ -120,7 +186,7 @@ const Dashboard = ({ navigation }: any) => {
     try {
       setRefreshing(true);
       await refetch();
-      console.log("Refreshed!");
+      await ordersRefetch();
     } catch (e) {
       console.log(e);
     } finally {
@@ -175,44 +241,88 @@ const Dashboard = ({ navigation }: any) => {
         )}
         <Sections>
           <Labels>What can we do for you today?</Labels>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{
-              width: "100%",
-              height: 124,
-            }}
-          >
-            <ServiceSelector
-              emoji="🛒"
-              name="Shopping"
-              onPress={() => {
-                setService("shopping");
+          <ServicesContainer>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{
+                width: "100%",
+                height: 124,
               }}
-              isSelected={service === "shopping"}
-            />
-            <ServiceSelector
-              emoji="🏘️"
-              name="Property Viewing"
-              onPress={() => {
-                setService("property");
+            >
+              <ServiceSelector
+                emoji="🛒"
+                name="Shopping"
+                onPress={() => {
+                  navigation.navigate("Shopping");
+                }}
+                isSelected={service === "shopping"}
+              />
+              <ServiceSelector
+                emoji="🏘️"
+                name="Property Viewing"
+                onPress={() => {
+                  navigation.navigate("PropertyViewing");
+                }}
+                isSelected={service === "property"}
+              />
+              <ServiceSelector
+                emoji="📦"
+                name="Parcel pickup"
+                onPress={() => {
+                  navigation.navigate("Parcel");
+                }}
+                isSelected={service === "parcel"}
+              />
+            </ScrollView>
+            <LinearGradient
+              pointerEvents={"none"}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                flex: 1,
+                width: "100%",
+                height: 124,
               }}
-              isSelected={service === "property"}
+              colors={[
+                "white",
+                "rgba(255,255,255, 0.1)",
+                "transparent",
+                "transparent",
+                "transparent",
+                "rgba(255,255,255, 0.1)",
+                "white",
+              ]}
             />
-            <ServiceSelector
-              emoji="📦"
-              name="Parcel pickup"
-              onPress={() => {
-                setService("parcel");
-              }}
-              isSelected={service === "parcel"}
-            />
-          </ScrollView>
+          </ServicesContainer>
         </Sections>
         <Sections>
           <Labels>Happening</Labels>
         </Sections>
+        {ordersLoading && (
+          <LoadingBox>
+            <ActivityIndicator />
+          </LoadingBox>
+        )}
+        {!ordersLoading &&
+          (ordersData?.order?.length > 0 ? (
+            <Text>ORDER HERE</Text>
+          ) : (
+            <LoadingBox>
+              <Text>No active order.</Text>
+            </LoadingBox>
+          ))}
       </Body>
+      {service !== "" && (
+        <SubmitButtonContainer>
+          <SubmitButton>
+            <OrderText>Order now!</OrderText>
+          </SubmitButton>
+        </SubmitButtonContainer>
+      )}
     </Container>
   );
 };
