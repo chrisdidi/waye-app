@@ -22,7 +22,7 @@ const Label = styled.Text`
   font-size: 16px;
   margin-left: 8px;
   margin-bottom: 8px;
-  color: ${(props) => props.theme.colors.main};
+  color: white;
 `;
 interface IProps {
   placeholder: string;

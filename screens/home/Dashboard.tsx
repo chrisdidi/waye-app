@@ -1,32 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
-  View,
-  Text,
   TouchableOpacity,
-  Image,
   ScrollView,
   RefreshControl,
   Dimensions,
-  ActivityIndicator,
 } from "react-native";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import styled from "../../styles/styled-components";
 import Constants from "expo-constants";
 import Icon from "../../assets/icon.png";
-import {
-  useIsFocused,
-  useNavigation,
-  useNavigationState,
-  useRoute,
-} from "@react-navigation/native";
 import { gql, useQuery } from "@apollo/client";
 import { ADVERTISEMENTS_FRAGMENT } from "../../fragments";
 import ServiceSelector from "../../components/ServiceSelector";
 import useOrders from "../../hooks/useOrders";
-import { ORDER_STATUS } from "../../enum";
-import { auth } from "../../firebaseConfig";
 import { MeStore } from "../../context/MeStore";
 import { LinearGradient } from "expo-linear-gradient";
+import OrdersList from "../../components/OrdersList";
 
 const Container = styled.View`
   flex: 1;
@@ -93,26 +82,6 @@ const AdsTextContainer = styled.View`
   padding: 4px 8px;
 `;
 
-const SubmitButtonContainer = styled.View`
-  position: absolute;
-  bottom: 0;
-  padding: 12px 20px;
-  shadow-color: ${(props) => props.theme.colors.grey400};
-  shadow-opacity: 0.4;
-  padding-bottom: 28px;
-  background-color: white;
-  width: 100%;
-`;
-
-const SubmitButton = styled.View`
-  width: 100%;
-  height: 60px;
-  border-radius: 16px;
-  align-items: center;
-  justify-content: center;
-  background-color: ${(props) => props.theme.colors.secondary};
-`;
-
 const Labels = styled.Text`
   font-family: ${(props) => props.theme.mainFontSemiBold};
   color: ${(props) => props.theme.colors.grey700};
@@ -123,20 +92,6 @@ const Labels = styled.Text`
 const Sections = styled.View`
   width: 100%;
   padding: 16px;
-`;
-
-const OrderText = styled.Text`
-  font-family: ${(props) => props.theme.mainFontSemiBold};
-  color: ${(props) => props.theme.colors.main};
-  text-align: center;
-  font-size: 20px;
-`;
-
-const LoadingBox = styled.View`
-  width: 100%;
-  height: 80px;
-  align-items: center;
-  justify-content: center;
 `;
 
 const ServicesContainer = styled.View`
@@ -302,7 +257,21 @@ const Dashboard = ({ navigation }: any) => {
         <Sections>
           <Labels>Happening</Labels>
         </Sections>
-        {ordersLoading && (
+        <OrdersList
+          status={[
+            {
+              status: {
+                _eq: "Waiting",
+              },
+            },
+            {
+              status: {
+                _eq: "Ongoing",
+              },
+            },
+          ]}
+        />
+        {/* {ordersLoading && (
           <LoadingBox>
             <ActivityIndicator />
           </LoadingBox>
@@ -314,15 +283,8 @@ const Dashboard = ({ navigation }: any) => {
             <LoadingBox>
               <Text>No active order.</Text>
             </LoadingBox>
-          ))}
+          ))} */}
       </Body>
-      {service !== "" && (
-        <SubmitButtonContainer>
-          <SubmitButton>
-            <OrderText>Order now!</OrderText>
-          </SubmitButton>
-        </SubmitButtonContainer>
-      )}
     </Container>
   );
 };

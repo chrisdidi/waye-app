@@ -27,10 +27,16 @@ const Body = styled.View`
 `;
 
 const Footer = styled.View`
-  flex: 3;
+  flex: 1;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  padding: 20px;
+  border-top-right-radius: 40px;
+  border: solid 4px ${(props) => props.theme.colors.main};
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+  background-color: ${(props) => props.theme.colors.secondary};
 `;
 
 const MenuContainer = styled.View`
@@ -73,13 +79,26 @@ const AvatarContainer = styled.TouchableOpacity`
   flex-direction: row;
 `;
 
+const FooterSmallText = styled.Text`
+  color: white;
+  font-family: ${(props) => props.theme.mainFont};
+  font-size: 16px;
+  margin-bottom: 4px;
+`;
+
+const FooterText = styled.Text`
+  color: white;
+  font-family: ${(props) => props.theme.mainFontBold};
+  font-size: 18px;
+`;
+
 interface IProps extends DrawerContentComponentProps<any> {}
 
 const DrawerMenu: React.FC<IProps> = ({ navigation }) => {
   const { data } = useContext(MeStore);
   return (
     <Container>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 6 }}>
         <Header>
           <AvatarContainer
             onPress={() => {
@@ -131,8 +150,17 @@ const DrawerMenu: React.FC<IProps> = ({ navigation }) => {
             </TouchableOpacity>
           </SignOutContainer>
         </Body>
-        <Footer></Footer>
       </SafeAreaView>
+      {data?.users[0]?.role === "Driver" ? (
+        <TouchableOpacity style={{ flex: 1 }}>
+          <Footer>
+            <FooterSmallText>Visit</FooterSmallText>
+            <FooterText>Driver portal</FooterText>
+          </Footer>
+        </TouchableOpacity>
+      ) : (
+        <View style={{ flex: 1 }}></View>
+      )}
     </Container>
   );
 };

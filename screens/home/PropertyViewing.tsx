@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "../../styles/styled-components";
 import { LinearGradient } from "expo-linear-gradient";
 import { BackgroundOverlayColors } from "../../constants";
@@ -11,6 +11,11 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import GoogleMapAutocomplete from "../../components/GoogleMapAutocomplete";
+import DateTimeInput from "../../components/DateTimeInput";
+import { gql, useMutation } from "@apollo/client";
+import { ORDER_FRAGMENT } from "../../fragments";
+import { OrderType } from "../../type";
+import { MeStore } from "../../context/MeStore";
 
 const Wrapper = styled(LinearGradient)`
   flex: 1;
@@ -26,7 +31,6 @@ const Container = styled.ScrollView`
   border-top-right-radius: 40px;
   border-top-left-radius: 40px;
   padding: 28px 20px;
-  position: relative;
 `;
 
 const Placeholder = styled.View`
@@ -53,8 +57,68 @@ const ButtonContainer = styled.View`
   shadow-opacity: 0.2;
   elevation: 2;
 `;
-const PropertyViewing = () => {
-  const { control } = useForm();
+
+const INSERT_ORDER = gql`
+  mutation newOrder($object: order_insert_input!) {
+    insert_order_one(object: $object) {
+      ...OrderPart
+    }
+  }
+  ${ORDER_FRAGMENT}
+`;
+interface FormProps {
+  instructions?: string;
+}
+
+interface InsertResultType {
+  insert_order_one?: OrderType;
+}
+
+const PropertyViewing = ({ navigation }: any) => {
+  const [newOrder, { loading }] = useMutation<
+    InsertResultType,
+    { object: OrderType }
+  >(INSERT_ORDER);
+  const { data } = useContext(MeStore);
+  const { control, getValues, handleSubmit } = useForm<FormProps>();
+  const [viewDate, setViewDate] = useState<Date | undefined>();
+  const [place, setPlace] = useState<any>();
+  const onDateChange = (e: Date | undefined) => {
+    setViewDate(e);
+  };
+
+  const onSubmit = () => {
+    let { instructions } = getValues();
+    let address = place.place.description;
+    let coordinates = place.details.coordinates;
+    let delivery_location = {
+      type: "Point",
+      crs: { type: "name", properties: { name: "urn:ogc:def:crs:EPSG::4326" } },
+      coordinates: [coordinates.lat, coordinates.lng],
+    };
+    let uid = data?.users[0]?.id;
+    newOrder({
+      variables: {
+        object: {
+          delivery_lat: coordinates.lat,
+          delivery_lng: coordinates.lng,
+          delivery_location,
+          type: "property",
+          user_id: uid,
+          complete_date: viewDate,
+          delivery_address: address,
+          delivery_place_id: place.place.place_id,
+          description: instructions,
+        },
+      },
+    })
+      .then((result) => {
+        navigation.goBack();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -69,25 +133,17 @@ const PropertyViewing = () => {
             <GoogleMapAutocomplete
               label="Viewing Address"
               onPlaceClick={({ details, place }): any => {
-                console.log(details.coordinates);
-                console.log(place);
+                setPlace({
+                  place,
+                  details,
+                });
               }}
             />
-            <Controller
-              name="budget"
-              control={control}
-              defaultValue=""
-              render={({ onBlur, onChange, value }) => (
-                <FormInput
-                  value={value}
-                  onChange={onChange}
-                  onBlur={() => {
-                    Keyboard.dismiss();
-                  }}
-                  label="Appointment Date/Time"
-                  placeholder="DD/MM/YY : HH:MM"
-                />
-              )}
+            <DateTimeInput
+              onChange={onDateChange}
+              selectedDate={viewDate}
+              label="Appointment Date/Time"
+              idText="Property Viewing"
             />
             <Controller
               name="instructions"
@@ -109,7 +165,12 @@ const PropertyViewing = () => {
           </Container>
         </Wrapper>
         <ButtonContainer>
-          <Button loading={false} title="Place Order" onPress={() => {}} />
+          <Button
+            loading={loading}
+            disabled={loading || place === undefined || viewDate === undefined}
+            title="Place Order"
+            onPress={handleSubmit(onSubmit)}
+          />
         </ButtonContainer>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

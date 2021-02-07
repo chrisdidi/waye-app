@@ -1,12 +1,13 @@
 import React from "react";
 import { TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
-import styled from "../styles/styled-components";
+import { DefaultTheme, ThemeProps } from "styled-components";
+import styled, { withTheme } from "../styles/styled-components";
 
-const Container = styled.View`
+const Container = styled.View<any>`
   width: 100%;
   padding: 16px 18px;
-  background-color: ${(props) => props.theme.colors.main};
-  border-radius: ${(props) => props.theme.borderRadius};
+  background-color: ${(props) => props.bgColor};
+  border-radius: 40px;
   align-items: center;
   justify-content: center;
 `;
@@ -17,7 +18,7 @@ const Title = styled.Text`
   text-align: center;
 `;
 
-interface IProps {
+interface IProps extends ThemeProps<DefaultTheme> {
   title: string;
   onPress: any;
   disabled?: boolean;
@@ -28,10 +29,11 @@ const Button: React.FC<IProps> = ({
   title,
   loading,
   onPress,
+  theme,
 }) => {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Container>
+    <TouchableOpacity onPress={disabled ? () => {} : onPress}>
+      <Container bgColor={disabled ? theme.colors.grey300 : theme.colors.main}>
         <Title>
           {loading ? <ActivityIndicator size={17} color="white" /> : title}
         </Title>
@@ -40,4 +42,4 @@ const Button: React.FC<IProps> = ({
   );
 };
 
-export default Button;
+export default withTheme(Button);

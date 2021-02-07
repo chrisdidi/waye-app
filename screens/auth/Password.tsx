@@ -25,7 +25,7 @@ const Content = styled.View`
 `;
 
 const BoldText = styled.Text`
-color: ${(props) => props.theme.colors.main}
+  color: white;
   font-family: ${(props) => props.theme.mainFontSemiBold};
   font-size: 18px;
   margin-left: 12px;
@@ -60,7 +60,6 @@ const Password = ({ navigation, route }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
 
-  console.log(errors);
   const onSubmit = ({ password }: FormTypes) => {
     setAuthLoading(true);
     if (action === "signIn") {

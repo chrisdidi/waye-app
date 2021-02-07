@@ -42,7 +42,9 @@ export default function App() {
   }, []);
   return (
     <ApolloProvider client={client}>
-      {isLoggedIn !== null && fontsLoaded ? (
+      {isLoggedIn === null && !fontsLoaded ? (
+        <AppLoading />
+      ) : (
         <NavigationContainer>
           <ThemeProvider theme={theme}>
             <MeProvider>
@@ -54,8 +56,6 @@ export default function App() {
           </ThemeProvider>
           <StatusBar style="auto" />
         </NavigationContainer>
-      ) : (
-        <AppLoading />
       )}
     </ApolloProvider>
   );

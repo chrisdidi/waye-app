@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import {
-  View,
-  Image,
-  Text,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
@@ -94,7 +91,6 @@ const Email = ({ navigation }: Props) => {
         }
       });
   };
-  console.log(errors);
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}

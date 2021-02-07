@@ -33,12 +33,10 @@ export const ORDER_FRAGMENT = gql`
     delivery_place_id
     delivery_lat
     delivery_lng
-    target_address
-    target_place_id
-    target_lat
-    target_lng
     status
     complete_date
     driver_id
+    type
+    delivery_location
   }
 `;
