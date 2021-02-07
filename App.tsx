@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { Button, StyleSheet, Text, View } from "react-native";
 import AppLoading from "expo-app-loading";
-import firebase from "./firebaseConfig";
-import { theme } from "./styles/theme";
-import { ThemeProvider } from "./styles/styled-components";
-import AuthNavigation from "./navigations/AuthNavigation";
+import firebase from "./src/firebaseConfig";
+import { theme } from "./src/styles/theme";
+import { ThemeProvider } from "./src/styles/styled-components";
+import AuthNavigation from "./src/navigations/AuthNavigation";
 import {
   useFonts,
   Montserrat_300Light,
@@ -18,8 +18,8 @@ import {
 import AsyncStorage from "@react-native-community/async-storage";
 import { ApolloProvider, makeVar } from "@apollo/client";
 import client, { authTokenVar } from "./apolloClient";
-import MainNavigation from "./navigations/MainNavigation";
-import { MeProvider } from "./context/MeStore";
+import MainNavigation from "./src/navigations/MainNavigation";
+import { MeProvider } from "./src/context/MeStore";
 export default function App() {
   const [fontsLoaded] = useFonts({
     Montserrat_300Light,

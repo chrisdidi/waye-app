@@ -3,6 +3,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import styled from "../styles/styled-components";
 import { OrderType } from "../type";
 import { Ionicons } from "@expo/vector-icons";
+import Status from "./Status";
 
 const Container = styled.View`
   width: 100%;
@@ -15,7 +16,7 @@ const Container = styled.View`
 const Top = styled.View`
   width: 100%;
   background-color: ${(props) => props.theme.colors.blue50};
-  padding: 16px 20px;
+  padding: 12px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -23,13 +24,16 @@ const Top = styled.View`
 
 const GrayText = styled.Text`
   color: ${(props) => props.theme.colors.grey500};
+  margin-bottom: 4px;
 `;
 
-const StatusCircle = styled.View`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: ${(props) => props.theme.colors.yellow400};
+const IDContainer = styled.View`
+  width: auto;
+  flex-direction: column;
+`;
+
+const Footer = styled.View`
+  padding: 12px;
 `;
 
 interface IProps {
@@ -45,15 +49,19 @@ const OrderBox: React.FC<IProps> = ({ order }) => {
     <Container>
       <TouchableOpacity onPress={toggleDetails}>
         <Top>
-          <GrayText>Order #{order.id}</GrayText>
+          <IDContainer>
+            <GrayText>Order #{order.id}</GrayText>
+          </IDContainer>
           {showDetails ? (
             <Ionicons name="chevron-up" size={16} color="gray" />
           ) : (
             <Ionicons name="chevron-down" size={16} color="gray" />
           )}
         </Top>
-        <StatusCircle />
       </TouchableOpacity>
+      <Footer>
+        <Status type={order.type} status={order.status} />
+      </Footer>
     </Container>
   );
 };

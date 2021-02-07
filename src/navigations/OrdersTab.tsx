@@ -28,13 +28,29 @@ const OrdersTab: React.FC<IProps> = ({ theme }) => {
       }}
     >
       <Tab.Screen name="INCOMPLETE" options={{ title: "ON GOING" }}>
-        {(props) => <OrdersList {...props} status="ON GOING" />}
+        {(props) => (
+          <OrdersList
+            {...props}
+            status={[
+              {
+                status: { _eq: "Ongoing" },
+              },
+              {
+                status: { _eq: "Waiting" },
+              },
+            ]}
+          />
+        )}
       </Tab.Screen>
       <Tab.Screen name="COMPLETED" options={{ title: "COMPLETED" }}>
-        {(props) => <OrdersList {...props} status="Complete" />}
+        {(props) => (
+          <OrdersList {...props} status={[{ status: { _eq: "Complete" } }]} />
+        )}
       </Tab.Screen>
       <Tab.Screen name="CANCELLED" options={{ title: "CANCELLED" }}>
-        {(props) => <OrdersList {...props} status="Cancelled" />}
+        {(props) => (
+          <OrdersList {...props} status={[{ status: { _eq: "Cancelled" } }]} />
+        )}
       </Tab.Screen>
     </Tab.Navigator>
   );
