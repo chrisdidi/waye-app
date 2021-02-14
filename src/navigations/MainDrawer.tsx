@@ -5,6 +5,7 @@ import DrawerMenu from "../components/DrawerMenu";
 import OrdersNavigation from "./OrdersNavigation";
 import Settings from "../screens/settings/Settings";
 import ProfileNavigation from "./ProfileNavigation";
+import DriverNavigation from "./DriverNavigation";
 
 const Drawer = createDrawerNavigator();
 
@@ -24,6 +25,7 @@ const MainDrawer = () => {
       />
       <Drawer.Screen name="Profile" component={ProfileNavigation} />
       <Drawer.Screen name="Settings" component={Settings} />
+      <Drawer.Screen name="Driver" component={DriverNavigation} />
     </Drawer.Navigator>
   );
 };

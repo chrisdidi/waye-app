@@ -47,9 +47,7 @@ const Status: React.FC<IProps> = ({ status, type, theme }) => {
       case "Complete":
         return "Order completed!";
       default:
-        return type === "property"
-          ? "Driver is viewing your property..."
-          : "Driver is picking your order up...";
+        return "In progress...";
     }
   };
 

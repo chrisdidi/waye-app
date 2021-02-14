@@ -152,7 +152,12 @@ const DrawerMenu: React.FC<IProps> = ({ navigation }) => {
         </Body>
       </SafeAreaView>
       {data?.users[0]?.role === "Driver" ? (
-        <TouchableOpacity style={{ flex: 1 }}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Driver");
+          }}
+          style={{ flex: 1 }}
+        >
           <Footer>
             <FooterSmallText>Visit</FooterSmallText>
             <FooterText>Driver portal</FooterText>

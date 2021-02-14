@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import styled from "../../styles/styled-components";
 import { LinearGradient } from "expo-linear-gradient";
 import { BackgroundOverlayColors } from "../../constants";
@@ -10,6 +10,11 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
 } from "react-native";
+import GoogleMapAutocomplete from "../../components/GoogleMapAutocomplete";
+import { gql, useMutation } from "@apollo/client";
+import { OrderType } from "../../type";
+import { ORDER_FRAGMENT } from "../../fragments";
+import { MeStore } from "../../context/MeStore";
 
 const Wrapper = styled(LinearGradient)`
   flex: 1;
@@ -52,8 +57,71 @@ const ButtonContainer = styled.View`
   shadow-opacity: 0.2;
   elevation: 2;
 `;
-const Shopping = () => {
-  const { control } = useForm();
+
+interface FormProps {
+  description: string;
+  budget: number;
+}
+
+const INSERT_ORDER = gql`
+  mutation newOrder($object: order_insert_input!) {
+    insert_order_one(object: $object) {
+      ...OrderPart
+    }
+  }
+  ${ORDER_FRAGMENT}
+`;
+
+interface InsertResultType {
+  insert_order_one?: OrderType;
+}
+
+const Shopping = ({ navigation }: any) => {
+  const { data } = useContext(MeStore);
+  const [newOrder, { loading }] = useMutation<
+    InsertResultType,
+    { object: OrderType }
+  >(INSERT_ORDER);
+  const { control, getValues, handleSubmit, watch } = useForm<FormProps>();
+  const [place, setPlace] = useState<any>();
+
+  const onFormSubmit = () => {
+    let { budget, description } = getValues();
+    let address = place.place.description;
+    let coordinates = place.details.coordinates;
+    let delivery_location = {
+      type: "Point",
+      crs: { type: "name", properties: { name: "urn:ogc:def:crs:EPSG::4326" } },
+      coordinates: [coordinates.lat, coordinates.lng],
+    };
+    let encoded = encodeURI(description);
+
+    let uid = data?.users[0]?.id;
+    let now = new Date();
+    let complete_date = now.toISOString();
+    newOrder({
+      variables: {
+        object: {
+          delivery_lat: coordinates.lat,
+          delivery_lng: coordinates.lng,
+          delivery_location,
+          type: "shopping",
+          user_id: uid,
+          complete_date,
+          delivery_address: address,
+          delivery_place_id: place.place.place_id,
+          description: encoded,
+          budget,
+        },
+      },
+    })
+      .then((result) => {
+        navigation.goBack();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -92,13 +160,23 @@ const Shopping = () => {
                   onBlur={() => {
                     Keyboard.dismiss();
                   }}
+                  type="number-pad"
                   prefix="RM"
                   label="What is your budget?"
                   placeholder="XX"
                 />
               )}
             />
-            <Controller
+            <GoogleMapAutocomplete
+              label="Delivery Address"
+              onPlaceClick={({ details, place }): any => {
+                setPlace({
+                  place,
+                  details,
+                });
+              }}
+            />
+            {/* <Controller
               name="address"
               control={control}
               defaultValue=""
@@ -113,12 +191,22 @@ const Shopping = () => {
                   placeholder="Search your home"
                 />
               )}
-            />
+            /> */}
             <Placeholder></Placeholder>
           </Container>
         </Wrapper>
         <ButtonContainer>
-          <Button loading={false} title="Place Order" onPress={() => {}} />
+          <Button
+            title="Place Order"
+            loading={loading}
+            disabled={
+              loading ||
+              !watch().budget ||
+              !watch().description ||
+              place === undefined
+            }
+            onPress={handleSubmit(onFormSubmit)}
+          />
         </ButtonContainer>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

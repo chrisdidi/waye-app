@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React, { useContext, useState } from "react";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import * as Haptics from "expo-haptics";
 import styled from "../styles/styled-components";
 import { OrderType } from "../type";
 import { Ionicons } from "@expo/vector-icons";
@@ -27,6 +28,24 @@ const GrayText = styled.Text`
   margin-bottom: 4px;
 `;
 
+const SemiboldGrayText = styled.Text`
+  color: ${(props) => props.theme.colors.grey500};
+  margin-bottom: 4px;
+  font-family: ${(props) => props.theme.mainFontSemiBold};
+`;
+
+const SemiBoldWhiteText = styled.Text`
+  color: white;
+  margin-bottom: 4px;
+  font-family: ${(props) => props.theme.mainFontSemiBold};
+`;
+
+const NoteLabel = styled.Text`
+  color: ${(props) => props.theme.colors.grey700};
+  font-family: ${(props) => props.theme.mainFontSemiBold};
+  margin-top: 12px;
+`;
+
 const IDContainer = styled.View`
   width: auto;
   flex-direction: column;
@@ -34,6 +53,22 @@ const IDContainer = styled.View`
 
 const Footer = styled.View`
   padding: 12px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Body = styled.View`
+  width: 100%;
+  padding: 16px;
+`;
+
+const MessageButton = styled.View`
+  background-color: ${(props) => props.theme.colors.blue400};
+  padding: 6px;
+  border-radius: 12px;
+  elevation: 1;
+  box-shadow: 0px 1px 2px rgba(60, 60, 60, 0.3);
 `;
 
 interface IProps {
@@ -43,14 +78,21 @@ const OrderBox: React.FC<IProps> = ({ order }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const toggleDetails = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setShowDetails(!showDetails);
   };
   return (
     <Container>
-      <TouchableOpacity onPress={toggleDetails}>
+      <TouchableWithoutFeedback onPress={toggleDetails}>
         <Top>
           <IDContainer>
-            <GrayText>Order #{order.id}</GrayText>
+            <GrayText>
+              <GrayText>Order #{order.id}&nbsp;&nbsp;</GrayText>
+              <SemiboldGrayText>
+                {order.type === "property" && "Property Viewing"}
+                {order.type === "shopping" && "Personal Shopper"}
+              </SemiboldGrayText>
+            </GrayText>
           </IDContainer>
           {showDetails ? (
             <Ionicons name="chevron-up" size={16} color="gray" />
@@ -58,9 +100,36 @@ const OrderBox: React.FC<IProps> = ({ order }) => {
             <Ionicons name="chevron-down" size={16} color="gray" />
           )}
         </Top>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
+      {showDetails && order.type === "property" && (
+        <Body>
+          <NoteLabel>Address:</NoteLabel>
+          <SemiboldGrayText>{order.delivery_address}</SemiboldGrayText>
+          <NoteLabel>Instructions:</NoteLabel>
+          <SemiboldGrayText>{order.description || "N/A"}</SemiboldGrayText>
+        </Body>
+      )}
+      {showDetails && order.type === "shopping" && (
+        <Body>
+          <NoteLabel>Delivery Address</NoteLabel>
+          <SemiboldGrayText>{order.delivery_address}</SemiboldGrayText>
+          <NoteLabel>Items</NoteLabel>
+          <SemiboldGrayText>
+            {order.description && decodeURI(order.description)}
+          </SemiboldGrayText>
+          <NoteLabel>Budget:</NoteLabel>
+          <SemiboldGrayText>RM{order.budget}</SemiboldGrayText>
+        </Body>
+      )}
       <Footer>
         <Status type={order.type} status={order.status} />
+        {order?.status === "Ongoing" && (
+          <TouchableWithoutFeedback>
+            <MessageButton>
+              <Ionicons name="chatbubbles" size={14} color="white" />
+            </MessageButton>
+          </TouchableWithoutFeedback>
+        )}
       </Footer>
     </Container>
   );

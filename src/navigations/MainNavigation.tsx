@@ -19,7 +19,7 @@ const LoadingContainer = styled.View`
 `;
 
 const MainNavigation = () => {
-  const { data, loading, error, refetch } = useContext(MeStore);
+  const { data, loading } = useContext(MeStore);
   return loading || !data ? (
     <LoadingContainer>
       <ActivityIndicator color="white" />

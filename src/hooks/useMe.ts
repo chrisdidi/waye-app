@@ -1,10 +1,10 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useSubscription } from "@apollo/client";
 import React from "react";
 import { auth } from "../firebaseConfig";
 import { USERS_FRAGMENT } from "../fragments";
 
 const GET_ME = gql`
-  query getMe($where: users_bool_exp) {
+  subscription getMe($where: users_bool_exp) {
     users(where: $where) {
       ...UsersPart
     }
@@ -14,7 +14,7 @@ const GET_ME = gql`
 const useMe = () => {
   let uid = auth()?.currentUser?.uid;
 
-  const { data, loading, error, refetch } = useQuery(GET_ME, {
+  const { data, loading, error } = useSubscription(GET_ME, {
     variables: {
       where: {
         firebase_id: {
@@ -23,8 +23,9 @@ const useMe = () => {
       },
     },
   });
+  console.log(error, loading);
 
-  return { data, loading, error, refetch };
+  return { data, loading, error };
 };
 
 export default useMe;

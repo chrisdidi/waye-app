@@ -20,6 +20,10 @@ import { ApolloProvider, makeVar } from "@apollo/client";
 import client, { authTokenVar } from "./apolloClient";
 import MainNavigation from "./src/navigations/MainNavigation";
 import { MeProvider } from "./src/context/MeStore";
+import { StatusBarHeight } from "./src/StatusBarHeight";
+import TopNotification from "./src/components/TopNotification";
+import NotificationStoreProvider from "./src/context/NotificationStore";
+import MessagesStoreProvider from "./src/context/MessagesStore";
 export default function App() {
   const [fontsLoaded] = useFonts({
     Montserrat_300Light,
@@ -48,10 +52,19 @@ export default function App() {
         <NavigationContainer>
           <ThemeProvider theme={theme}>
             <MeProvider>
-              <View style={{ flex: 1 }}>
-                {isLoggedIn !== null &&
-                  (isLoggedIn ? <MainNavigation /> : <AuthNavigation />)}
-              </View>
+              <NotificationStoreProvider>
+                <View style={{ flex: 1 }}>
+                  <TopNotification />
+                  {isLoggedIn !== null &&
+                    (isLoggedIn ? (
+                      <MessagesStoreProvider>
+                        <MainNavigation />
+                      </MessagesStoreProvider>
+                    ) : (
+                      <AuthNavigation />
+                    ))}
+                </View>
+              </NotificationStoreProvider>
             </MeProvider>
           </ThemeProvider>
           <StatusBar style="auto" />

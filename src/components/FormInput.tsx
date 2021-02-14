@@ -43,15 +43,30 @@ const Label = styled.Text`
   color: ${(props) => props.theme.colors.grey700};
 `;
 interface IProps {
-  placeholder: string;
-  value: any;
-  onChange: any;
-  onBlur: any;
+  placeholder?: string;
+  value?: any;
+  onChange?: any;
+  onBlur?: any;
   secureTextEntry?: boolean;
   prefix?: string;
   suffix?: string;
   label?: string;
   multiline?: boolean;
+  type?:
+    | "default"
+    | "email-address"
+    | "numeric"
+    | "phone-pad"
+    | "number-pad"
+    | "decimal-pad"
+    | "visible-password"
+    | "ascii-capable"
+    | "numbers-and-punctuation"
+    | "url"
+    | "name-phone-pad"
+    | "twitter"
+    | "web-search"
+    | undefined;
 }
 const FormInput: React.FC<IProps> = ({
   placeholder,
@@ -63,6 +78,7 @@ const FormInput: React.FC<IProps> = ({
   multiline = false,
   prefix,
   suffix,
+  type = "default",
 }) => (
   <Container>
     {label && <Label>{label}</Label>}
@@ -72,6 +88,7 @@ const FormInput: React.FC<IProps> = ({
         placeholder={placeholder}
         value={value}
         onBlur={onBlur}
+        keyboardType={type}
         secureTextEntry={secureTextEntry}
         onChangeText={(value) => onChange(value)}
         multiline={multiline}

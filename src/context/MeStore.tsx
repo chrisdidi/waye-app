@@ -4,7 +4,7 @@ import useMe from "../hooks/useMe";
 export const MeStore = React.createContext<any | null>(null);
 
 export const MeProvider = (props: any) => {
-  const { data, loading, error, refetch } = useMe();
+  const { data, loading, error } = useMe();
 
   return (
     <MeStore.Provider
@@ -12,7 +12,6 @@ export const MeProvider = (props: any) => {
         data,
         loading,
         error,
-        refetch,
       }}
     >
       {props.children}

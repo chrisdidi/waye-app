@@ -12,6 +12,15 @@ export const USERS_FRAGMENT = gql`
   }
 `;
 
+export const MESSAGES_FRAGMENT = gql`
+  fragment MessagesPart on messages {
+    id
+    created_at
+    seen
+    sender_id
+    order_id
+  }
+`;
 export const ADVERTISEMENTS_FRAGMENT = gql`
   fragment AdvertisementsPart on advertisements {
     id

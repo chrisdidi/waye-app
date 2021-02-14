@@ -108,20 +108,20 @@ const GET_ADVERTISEMENTS = gql`
   ${ADVERTISEMENTS_FRAGMENT}
 `;
 
+const Placeholder = styled.View`
+  width: 100%;
+  height: 40px;
+`;
+
 const Dashboard = ({ navigation }: any) => {
   const { width } = Dimensions.get("window");
-  const { data, loading, error, refetch } = useQuery(GET_ADVERTISEMENTS, {
+  const { data, refetch } = useQuery(GET_ADVERTISEMENTS, {
     fetchPolicy: "network-only",
     notifyOnNetworkStatusChange: true,
   });
 
   const { data: meData } = useContext(MeStore);
-  const {
-    data: ordersData,
-    loading: ordersLoading,
-    error: ordersError,
-    refetch: ordersRefetch,
-  } = useOrders({
+  const { refetch: ordersRefetch } = useOrders({
     fetchPolicy: "network-only",
     user_id: meData?.users[0]?.id,
     status: [
@@ -285,6 +285,7 @@ const Dashboard = ({ navigation }: any) => {
             </LoadingBox>
           ))} */}
       </Body>
+      <Placeholder />
     </Container>
   );
 };

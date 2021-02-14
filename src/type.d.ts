@@ -11,7 +11,7 @@ export type OrderType = {
   delivery_lat: number;
   delivery_lng: number;
   status?: ORDER_STATUS;
-  complete_date?: Date;
+  complete_date?: Date | string;
   driver_id?: number;
   type: string;
   delivery_location: any;

@@ -64,8 +64,6 @@ const Name = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [newUser, { loading, error }] = useMutation(INSERT_USER);
 
-  console.log(error);
-  const { refetch } = useContext(MeStore);
   const onSubmit = () => {
     setIsLoading(true);
     newUser({
@@ -76,10 +74,6 @@ const Name = () => {
           name,
         },
       },
-    }).then(() => {
-      refetch().then(() => {
-        setIsLoading(false);
-      });
     });
   };
 
