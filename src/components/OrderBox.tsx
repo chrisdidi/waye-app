@@ -5,6 +5,11 @@ import styled from "../styles/styled-components";
 import { OrderType } from "../type";
 import { Ionicons } from "@expo/vector-icons";
 import Status from "./Status";
+import BorderButton from "./BorderButton";
+import { gql, useMutation } from "@apollo/client";
+import { ORDER_FRAGMENT } from "../fragments";
+import { MeStore } from "../context/MeStore";
+import { NotificationStore } from "../context/NotificationStore";
 
 const Container = styled.View`
   width: 100%;
@@ -34,12 +39,6 @@ const SemiboldGrayText = styled.Text`
   font-family: ${(props) => props.theme.mainFontSemiBold};
 `;
 
-const SemiBoldWhiteText = styled.Text`
-  color: white;
-  margin-bottom: 4px;
-  font-family: ${(props) => props.theme.mainFontSemiBold};
-`;
-
 const NoteLabel = styled.Text`
   color: ${(props) => props.theme.colors.grey700};
   font-family: ${(props) => props.theme.mainFontSemiBold};
@@ -63,24 +62,42 @@ const Body = styled.View`
   padding: 16px;
 `;
 
-const MessageButton = styled.View`
-  background-color: ${(props) => props.theme.colors.blue400};
-  padding: 6px;
-  border-radius: 12px;
-  elevation: 1;
-  box-shadow: 0px 1px 2px rgba(60, 60, 60, 0.3);
-`;
-
 interface IProps {
   order: OrderType;
 }
+
+const CANCEL_ORDER_MUTATION = gql`
+  mutation cancelOrder($id: Int!) {
+    update_order_by_pk(pk_columns: { id: $id }, _set: { status: Cancelled }) {
+      ...OrderPart
+    }
+  }
+  ${ORDER_FRAGMENT}
+`;
 const OrderBox: React.FC<IProps> = ({ order }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const { data } = useContext(MeStore);
+  const { toast } = useContext(NotificationStore);
 
+  const [cancelOrder, { loading }] = useMutation(CANCEL_ORDER_MUTATION);
   const toggleDetails = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setShowDetails(!showDetails);
   };
+
+  const onCancelOrder = ({ id }: any) => {
+    cancelOrder({
+      variables: {
+        id,
+      },
+    }).catch((e) => {
+      console.log(e);
+      console.log(e.message);
+      console.log(e.extensions);
+      toast("An error has occured. Please try again.");
+    });
+  };
+
   return (
     <Container>
       <TouchableWithoutFeedback onPress={toggleDetails}>
@@ -123,12 +140,16 @@ const OrderBox: React.FC<IProps> = ({ order }) => {
       )}
       <Footer>
         <Status type={order.type} status={order.status} />
-        {order?.status === "Ongoing" && (
-          <TouchableWithoutFeedback>
-            <MessageButton>
-              <Ionicons name="chatbubbles" size={14} color="white" />
-            </MessageButton>
-          </TouchableWithoutFeedback>
+        {order?.status === "Ongoing" && <BorderButton label="Message Driver" />}
+        {order.status === "Waiting" && (
+          <BorderButton
+            label="Cancel"
+            loading={loading}
+            disabled={loading}
+            onPress={() => {
+              onCancelOrder({ id: order.id });
+            }}
+          />
         )}
       </Footer>
     </Container>

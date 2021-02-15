@@ -3,6 +3,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import React, { useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { DefaultTheme, StyledProps } from "styled-components";
+import RealtimeNearbyOrders from "../../components/RealTimeNearbyOrders";
 import { MeStore } from "../../context/MeStore";
 import { StatusBarHeight } from "../../StatusBarHeight";
 import styled, { withTheme } from "../../styles/styled-components";
@@ -118,6 +119,9 @@ const Dashboard: React.FC<IProps> = ({ navigation, theme }) => {
             </StatsBoxPadder>
           </StatsBoxContainers>
           <BoldBlackText>Nearby Orders</BoldBlackText>
+          {data?.users[0]?.id && (
+            <RealtimeNearbyOrders user_id={data.users[0].id} />
+          )}
         </ScrollView>
       </Head>
     </Container>
