@@ -221,14 +221,6 @@ const Dashboard = ({ navigation }: any) => {
                 }}
                 isSelected={service === "property"}
               />
-              <ServiceSelector
-                emoji="📦"
-                name="Parcel pickup"
-                onPress={() => {
-                  navigation.navigate("Parcel");
-                }}
-                isSelected={service === "parcel"}
-              />
             </ScrollView>
             <LinearGradient
               pointerEvents={"none"}

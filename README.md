@@ -2,10 +2,10 @@
 
 ## App
 
-- [ ] Realtime Nearby Jobs Update (Use phone location service)
+- [x] Realtime Nearby Jobs Update (Use phone location service)
 - [ ] Realtime Chatroom
-- [ ] Cancel Order (User)
-- [ ] Complete Order (Driver)
+- [x] Cancel Order (User)
+- [x] Complete Order (Driver)
 - [ ] Driver Dashboard Stats
 
 ## Web

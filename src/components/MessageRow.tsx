@@ -1,3 +1,4 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import styled from "../styles/styled-components";
@@ -73,8 +74,13 @@ const MessageRow: React.FC<IProps> = ({
   orderId,
   serviceType,
 }) => {
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("Chatroom", { orderId });
+      }}
+    >
       <Container>
         <IdContainer>
           <SmallGreyText>ORDER</SmallGreyText>
@@ -86,7 +92,7 @@ const MessageRow: React.FC<IProps> = ({
               {serviceType === "property" && "Property Viewing"}
             </BlackSemiBoldText>
             {unseenMessages !== undefined && unseenMessages > 0 ? (
-              <BlackBoldText>{unseenMessages} unseen messages.</BlackBoldText>
+              <GreyText>{unseenMessages} messages.</GreyText>
             ) : (
               <BlackSmallText>{previewMessage}</BlackSmallText>
             )}

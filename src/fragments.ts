@@ -19,6 +19,7 @@ export const MESSAGES_FRAGMENT = gql`
     seen
     sender_id
     order_id
+    message
   }
 `;
 export const ADVERTISEMENTS_FRAGMENT = gql`

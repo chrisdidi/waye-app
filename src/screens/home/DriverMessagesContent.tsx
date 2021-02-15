@@ -49,14 +49,14 @@ const MESSAGES_SUBSCRIBE = gql`
     }
   }
 `;
-const MessagesContent = ({ route }: any) => {
+const DriverMessagesContent = ({ route }: any) => {
   const { data: meData } = useContext(MeStore);
   const { messages } = useContext(MessagesStore);
 
   const { data, loading, error, refetch } = useQuery(MESSAGES_SUBSCRIBE, {
     variables: {
       where: {
-        user_id: { _eq: meData?.users[0]?.id },
+        driver_id: { _eq: meData?.users[0]?.id },
         status: { _eq: route?.params?.status },
         latest_message: { _is_null: false },
       },
@@ -100,4 +100,4 @@ const MessagesContent = ({ route }: any) => {
   );
 };
 
-export default MessagesContent;
+export default DriverMessagesContent;

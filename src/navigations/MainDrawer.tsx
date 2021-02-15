@@ -6,6 +6,7 @@ import OrdersNavigation from "./OrdersNavigation";
 import Settings from "../screens/settings/Settings";
 import ProfileNavigation from "./ProfileNavigation";
 import DriverNavigation from "./DriverNavigation";
+import Chatroom from "../screens/home/Chatroom";
 
 const Drawer = createDrawerNavigator();
 
@@ -26,6 +27,7 @@ const MainDrawer = () => {
       <Drawer.Screen name="Profile" component={ProfileNavigation} />
       <Drawer.Screen name="Settings" component={Settings} />
       <Drawer.Screen name="Driver" component={DriverNavigation} />
+      <Drawer.Screen name="Chatroom" component={Chatroom} />
     </Drawer.Navigator>
   );
 };

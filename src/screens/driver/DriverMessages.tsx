@@ -4,6 +4,7 @@ import Constants from "expo-constants";
 import styled from "../../styles/styled-components";
 import MessagesTab from "../../navigations/MessagesTab";
 import { FontAwesome } from "@expo/vector-icons";
+import DriverMessagesTab from "../../navigations/DriverMessagesTab";
 
 const Container = styled.View`
   flex: 1;
@@ -36,7 +37,7 @@ const MessagesList: React.FC<any> = ({ navigation }) => {
         </TouchableOpacity>
         <BoldWhiteText>Messages</BoldWhiteText>
       </Header>
-      <MessagesTab />
+      <DriverMessagesTab />
     </Container>
   );
 };

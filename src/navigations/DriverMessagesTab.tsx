@@ -1,12 +1,12 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { withTheme } from "../styles/styled-components";
-import { ThemeProps, WithThemeFnInterface } from "styled-components";
-import MessagesContent from "../screens/home/MessagesContent";
+import { ThemeProps } from "styled-components";
+import DriverMessagesContent from "../screens/home/DriverMessagesContent";
 const Tab = createMaterialTopTabNavigator();
 
 interface IProps extends ThemeProps<any> {}
-const ProfileTab: React.FC<IProps> = ({ theme }) => {
+const DriverMessagesTab: React.FC<IProps> = ({ theme }) => {
   return (
     <Tab.Navigator
       sceneContainerStyle={{
@@ -30,16 +30,16 @@ const ProfileTab: React.FC<IProps> = ({ theme }) => {
         name="ONGOING"
         options={{ title: "ON GOING" }}
         initialParams={{ status: "Ongoing" }}
-        component={MessagesContent}
+        component={DriverMessagesContent}
       />
       <Tab.Screen
         name="COMPLETED"
         options={{ title: "COMPLETED" }}
         initialParams={{ status: "Complete" }}
-        component={MessagesContent}
+        component={DriverMessagesContent}
       />
     </Tab.Navigator>
   );
 };
 
-export default withTheme(ProfileTab);
+export default withTheme(DriverMessagesTab);

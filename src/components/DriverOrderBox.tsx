@@ -7,6 +7,8 @@ import Button from "./Button";
 import { gql, useMutation } from "@apollo/client";
 import { ORDER_FRAGMENT } from "../fragments";
 import { MeStore } from "../context/MeStore";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 const ShadowContainer = styled.View`
   width: 100%;
@@ -88,6 +90,7 @@ interface IProps extends ThemeProps<DefaultTheme> {
 }
 
 const DriverOrderBox: React.FC<IProps> = ({ order, theme }) => {
+  const navigation = useNavigation();
   const [acceptOrder, { loading, data }] = useMutation(ACCEPT_ORDER_MUTATION);
   const [
     completeOrder,
@@ -108,9 +111,13 @@ const DriverOrderBox: React.FC<IProps> = ({ order, theme }) => {
         id: order.id,
         driver_id: meData?.users[0]?.id,
       },
-    }).catch((e) => {
-      console.log(e);
-    });
+    })
+      .then(() => {
+        navigation.navigate("DriverOrders");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   const onCompleteOrder = () => {
@@ -187,6 +194,7 @@ const DriverOrderBox: React.FC<IProps> = ({ order, theme }) => {
                   {typeof order.description === "string" &&
                     decodeURI(order.description)}
                   {`\n`}
+                  {`\n`}
                 </MainColorText>
                 <SemiBoldText>
                   <LargeSemiboldText>Viewing Address{`\n`}</LargeSemiboldText>
@@ -218,7 +226,11 @@ const DriverOrderBox: React.FC<IProps> = ({ order, theme }) => {
           {order.status === "Ongoing" && (
             <Button
               title={"Send Message"}
-              onPress={onAcceptOrder}
+              onPress={() => {
+                navigation.navigate("Chatroom", {
+                  orderId: order.id,
+                });
+              }}
               loading={loading}
               disabled={loading}
             />

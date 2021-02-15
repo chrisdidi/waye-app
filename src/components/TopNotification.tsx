@@ -11,7 +11,7 @@ const BigContainer = styled.View`
 `;
 const Container = styled.View`
   padding: 8px;
-  padding-top: ${StatusBarHeight + 6}px;
+  padding-top: ${StatusBarHeight + 20}px;
   background-color: ${(props) => props.theme.colors.main};
 `;
 

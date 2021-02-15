@@ -34,7 +34,9 @@ const MessagesStoreProvider = ({ children }: any) => {
   const [messages, setMessages] = useState<any[] | null>(null);
   useEffect(() => {
     if (messages !== null && data?.messages.length > messages.length) {
-      toast("Order #" + data.messages[0].id + ": You have a new message!");
+      if (data?.messages[0].sender_id !== meData.users[0]?.id) {
+        toast("Order #" + data.messages[0].id + ": You have a new message!");
+      }
       setMessages(data.messages);
     }
     if (data?.messages && messages === null) {

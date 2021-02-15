@@ -16,3 +16,12 @@ export type OrderType = {
   type: string;
   delivery_location: any;
 };
+
+export type MessageType = {
+  id: number;
+  created_at: Date;
+  seen: boolean;
+  sender_id: number;
+  order_id: number;
+  message: string;
+};

@@ -10,6 +10,7 @@ import { gql, useMutation } from "@apollo/client";
 import { ORDER_FRAGMENT } from "../fragments";
 import { MeStore } from "../context/MeStore";
 import { NotificationStore } from "../context/NotificationStore";
+import { useNavigation } from "@react-navigation/native";
 
 const Container = styled.View`
   width: 100%;
@@ -75,6 +76,7 @@ const CANCEL_ORDER_MUTATION = gql`
   ${ORDER_FRAGMENT}
 `;
 const OrderBox: React.FC<IProps> = ({ order }) => {
+  const navigation = useNavigation();
   const [showDetails, setShowDetails] = useState(false);
   const { data } = useContext(MeStore);
   const { toast } = useContext(NotificationStore);
@@ -140,7 +142,14 @@ const OrderBox: React.FC<IProps> = ({ order }) => {
       )}
       <Footer>
         <Status type={order.type} status={order.status} />
-        {order?.status === "Ongoing" && <BorderButton label="Message Driver" />}
+        {order?.status === "Ongoing" && (
+          <BorderButton
+            onPress={() => {
+              navigation.navigate("Chatroom", { orderId: order.id });
+            }}
+            label="Message Driver"
+          />
+        )}
         {order.status === "Waiting" && (
           <BorderButton
             label="Cancel"

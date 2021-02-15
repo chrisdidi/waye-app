@@ -131,13 +131,6 @@ const DrawerMenu: React.FC<IProps> = ({ navigation }) => {
             >
               <MenuItem>Orders</MenuItem>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Settings");
-              }}
-            >
-              <MenuItem>Settings</MenuItem>
-            </TouchableOpacity>
             <MenuItem>Help</MenuItem>
           </MenuContainer>
           <SignOutContainer>
