@@ -47,5 +47,12 @@ export const ORDER_FRAGMENT = gql`
     driver_id
     type
     delivery_location
+    driver {
+      ...UsersPart
+    }
+    user {
+      ...UsersPart
+    }
   }
+  ${USERS_FRAGMENT}
 `;

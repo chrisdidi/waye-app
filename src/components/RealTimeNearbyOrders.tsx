@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import styled from "../styles/styled-components";
 import { OrderType } from "../type";
 import * as Location from "expo-location";
-import { ActivityIndicator, TouchableOpacity } from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import BorderButton from "./BorderButton";
+import DriverOrderBox from "./DriverOrderBox";
+import { ORDER_FRAGMENT } from "../fragments";
 
 const Container = styled.View`
   flex: 1;
@@ -35,9 +37,10 @@ const SUBSCRIBE_NEARBY_ORDERS = gql`
         driver_user_id: $driver_user_id
       }
     ) {
-      id
+      ...OrderPart
     }
   }
+  ${ORDER_FRAGMENT}
 `;
 
 interface OrdersResult {
@@ -114,16 +117,27 @@ const RealtimeNearbyOrders: React.FC<IProps> = ({ user_id }) => {
       }
     })();
   }, []);
-  console.log(resultData, error);
+
+  const onRefresh = async () => {
+    setLocationLoading(true);
+    let location = await Location.getCurrentPositionAsync({});
+    setLocation({
+      lat: location.coords.latitude,
+      lng: location.coords.longitude,
+    });
+    setLocationLoading(false);
+  };
   return (
     <Container>
       {location.lat === null && location.lng === null ? (
         <CenterView>
           {locationLoading && <ActivityIndicator />}
-          <GrayText>
-            You need to enable location service permission to start finding
-            nearby orders.
-          </GrayText>
+          {!locationLoading && (
+            <GrayText>
+              You need to enable location service permission to start finding
+              nearby orders.
+            </GrayText>
+          )}
         </CenterView>
       ) : loading ? (
         <CenterView>
@@ -132,15 +146,18 @@ const RealtimeNearbyOrders: React.FC<IProps> = ({ user_id }) => {
       ) : (
         resultData?.search_nearby_orders &&
         (resultData?.search_nearby_orders?.length > 0 ? (
-          resultData?.search_nearby_orders?.map((order) => (
-            <GrayText key={order.id}>
-              {order.type} {order.id}
-            </GrayText>
+          resultData?.search_nearby_orders?.map((order: any) => (
+            <DriverOrderBox order={order} key={order?.id} />
           ))
         ) : (
           <CenterView>
             <GrayText>No orders found.</GrayText>
-            <BorderButton label="Refresh Location" />
+            <View style={{ height: 20, width: 20 }} />
+            <BorderButton
+              onPress={onRefresh}
+              loading={locationLoading}
+              label={locationLoading ? "Refreshing..." : "Refresh Location"}
+            />
           </CenterView>
         ))
       )}

@@ -5,6 +5,7 @@ import { MeStore } from "../context/MeStore";
 import { ORDER_FRAGMENT } from "../fragments";
 import styled from "../styles/styled-components";
 import { OrderType } from "../type";
+import DriverOrderBox from "./DriverOrderBox";
 import OrderBox from "./OrderBox";
 
 const Container = styled.View`
@@ -54,7 +55,7 @@ const DriverOrderList: React.FC<IProps> = ({ status }) => {
       {!loading &&
         (data?.order && data?.order?.length > 0 ? (
           data?.order?.map((order, index) => (
-            <OrderBox order={order} key={index} />
+            <DriverOrderBox order={order} key={order.id} />
           ))
         ) : (
           <Text>No order found.</Text>

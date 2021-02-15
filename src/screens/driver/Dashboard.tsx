@@ -1,8 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import React, { useContext } from "react";
 import { TouchableOpacity } from "react-native";
-import { DefaultTheme, StyledProps } from "styled-components";
+import { DefaultTheme, ThemeProps } from "styled-components";
 import RealtimeNearbyOrders from "../../components/RealTimeNearbyOrders";
 import { MeStore } from "../../context/MeStore";
 import { StatusBarHeight } from "../../StatusBarHeight";
@@ -76,7 +75,7 @@ const YellowStatsBox = styled.View`
   background-color: ${(props) => props.theme.colors.yellow100};
   padding: 8px;
 `;
-interface IProps extends StyledProps<DefaultTheme> {
+interface IProps extends ThemeProps<DefaultTheme> {
   navigation: any;
 }
 const Dashboard: React.FC<IProps> = ({ navigation, theme }) => {
